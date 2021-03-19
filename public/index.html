@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/mod.css" rel="stylesheet" />
+    <script src='js/socket.io.min.js'></script>
+    <script src='js/gauge.min.js'></script>
+    <script src='js/objtypes.js'></script>
+    <title>Webvisu</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark"><a class="navbar-brand" href="#">OPC
+            Webvisu</a><button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="card w-100">
+                <h5 class="card-header">Miernik</h5>
+                <div class="card-body">
+                    <canvas id="gauge1" style="width:100%"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const socket = io.connect('http://localhost:3700');
+
+
+        var monitoredItemConfig = {
+            0 : {
+                type : TYPES.GAUGE,
+                elem : 'gauge1'
+            }
+        }
+
+        var opts = {
+            angle: 0,
+            lineWidth: 0.2,
+            radiusScale: 0.9,
+            pointer: {
+                length: 0.40,
+                strokeWidth: 0.05,
+                color: '#000000'
+            },
+            limitMax: true,
+            limitMin: true,
+            highDpiSupport: true
+        };
+
+        var target = document.getElementById('gauge1');
+        var gauge = new Gauge(target).setOptions(opts);
+
+        gauge.maxValue = 3000; // set max gauge value
+        gauge.minValue = 0;  // set min value
+        gauge.set(1250); // set actual value
+
+        socket.on('updateConfig', (data) => {
+
+        });
+
+        socket.on('updateMonitored', (data) => {
+            for(obj of data){
+                try {
+                    let element = monitoredConfig[obj.id];
+                    let target = document.getElementById('gauge1');
+                }catch(e){
+                    console.log("No such obj");
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
