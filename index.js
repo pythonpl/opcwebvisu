@@ -6,13 +6,10 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.engine('html', require('ejs').renderFile);
-
-
 app.get('/', (req, res) => { res.send('public/index.html') })
 
 server.listen(port, ()=> {});
@@ -23,6 +20,9 @@ const {
     TimestampsToReturn,
 } = require("node-opcua");
 
+/* 
+    OPC SERVER address
+*/
 const endpointUrl = "opc.tcp://localhost:9000";
 
 /*
@@ -61,12 +61,14 @@ async function runServer() {
         endpoint_must_exist: false
     });
     
+    // Retry connection
     client.on("backoff", (retry, delay) => {
         console.log("Retrying to connect to ", endpointUrl);
     });
     await client.connect(endpointUrl);
     console.log("Connected!");
 
+    // Create session and subscription after OPC client connected to server
     const session = await client.createSession();
     const subscription = await session.createSubscription2({
         requestedPublishingInterval: 500,
@@ -83,12 +85,16 @@ async function runServer() {
         queueSize: 100
     };
 
+    // Create monitored items list in subscription
     const OPC_items = (await subscription.monitorItems(OPC_monitoredItems, parameters, TimestampsToReturn.Both));
 
+    // Webvisu client connected
     io.sockets.on('connection', function (socket) {
         console.log('[socket.io]: client connected')
     });
 
+
+    // Monitored item changed
     OPC_items.on("changed", (monitoredItem, dataValue, index) => {
         io.sockets.emit('updateMonitored', {
             id: index,
@@ -96,6 +102,7 @@ async function runServer() {
         });
     });
 
+    // Handle program exit
     process.on("SIGINT", async () => {
         if (!running) {
             return;

@@ -45,9 +45,12 @@ function updateObject(id, value){
     Update gauge value in monitoredObjects array
 */
 function updateGauge(id, value){
-    monitoredObjects[id].set(rescale(value, monitoredItemConfig[id].min, monitoredItemConfig[id].max));
+    try{
+        monitoredObjects[id].set(rescale(value, monitoredItemConfig[id].min, monitoredItemConfig[id].max));
+    }catch(e){
+        console.log(e);
+    }
 }
-
 
 /*
     Rescale 0-1 real to min - max range

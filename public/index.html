@@ -40,7 +40,6 @@
     <script>
         const socket = io.connect('http://localhost:3700');
         var monitoredObjects = {}
-
         var monitoredItemConfig = {
             0: {
                 type: TYPES.GAUGE,
@@ -51,17 +50,20 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            /* Create objects for monitored items */
             for (id in monitoredItemConfig) {
                 try {
                     if (monitoredItemConfig[id].type == TYPES.GAUGE) {
                         monitoredObjects[id] = addGauge(id);
                     }
                 }
-                catch (error) {
-                    console.log(error);
+                catch (e) {
+                    console.log(e);
                 }
             }
 
+
+            /* Monitored item value changed - update object */
             socket.on('updateMonitored', (data) => {
                 updateObject(data.id, data.val);
             });
