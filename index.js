@@ -3,15 +3,19 @@ const socketIO = require("socket.io");
 const port = 3700;
 const fs = require('fs');
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.engine('html', require('ejs').renderFile);
 
-const io = socketIO.listen(app.listen(port));
 
 app.get('/', (req, res) => { res.send('public/index.html') })
+
+server.listen(port, ()=> {});
 
 const {
     AttributeIds,
@@ -70,9 +74,14 @@ async function runServer() {
 
     const OPC_items = (await subscription.monitorItems(OPC_monitoredItems, parameters, TimestampsToReturn.Both));
 
-    OPC_items.on("changed", (monitoredItem, dataValue, index) => {
-        io.sockets.emit('message', {
+    io.sockets.on('connection', function (socket) {
+        console.log('[socket.io]: client connected')
+    });
 
+    OPC_items.on("changed", (monitoredItem, dataValue, index) => {
+        io.sockets.emit('updateMonitored', {
+            id: index,
+            val: dataValue.value.value
         });
     });
 

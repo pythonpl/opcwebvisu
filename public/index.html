@@ -9,7 +9,7 @@
     <link href="css/mod.css" rel="stylesheet" />
     <script src='js/socket.io.min.js'></script>
     <script src='js/gauge.min.js'></script>
-    <script src='js/objtypes.js'></script>
+    <script src='js/func.js'></script>
     <title>Webvisu</title>
 </head>
 
@@ -39,50 +39,36 @@
 
     <script>
         const socket = io.connect('http://localhost:3700');
-
+        var objects = {}
 
         var monitoredItemConfig = {
-            0 : {
-                type : TYPES.GAUGE,
-                elem : 'gauge1'
+            0: {
+                type: TYPES.GAUGE,
+                elem: 'gauge1',
+                min: 0,
+                max: 100
             }
         }
 
-        var opts = {
-            angle: 0,
-            lineWidth: 0.2,
-            radiusScale: 0.9,
-            pointer: {
-                length: 0.40,
-                strokeWidth: 0.05,
-                color: '#000000'
-            },
-            limitMax: true,
-            limitMin: true,
-            highDpiSupport: true
-        };
-
-        var target = document.getElementById('gauge1');
-        var gauge = new Gauge(target).setOptions(opts);
-
-        gauge.maxValue = 3000; // set max gauge value
-        gauge.minValue = 0;  // set min value
-        gauge.set(1250); // set actual value
-
-        socket.on('updateConfig', (data) => {
-
-        });
-
-        socket.on('updateMonitored', (data) => {
-            for(obj of data){
+        window.addEventListener('DOMContentLoaded', () => {
+            for (element in monitoredItemConfig) {
+                let id = element;
+                element = monitoredItemConfig[element];
                 try {
-                    let element = monitoredConfig[obj.id];
-                    let target = document.getElementById('gauge1');
-                }catch(e){
-                    console.log("No such obj");
+                    if (element.type == TYPES.GAUGE) {
+                        objects[id] = addGauge(element.elem, element.min, element.max);
+                    }
+                }
+                catch (error) {
+                    console.log(error)
                 }
             }
+
+            socket.on('updateMonitored', (data) => {
+                updateObject(data.id, data.val)
+            });
         });
+
     </script>
 
 </body>
