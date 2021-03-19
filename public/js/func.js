@@ -16,6 +16,10 @@ const defaultGaugeOpts = Object.freeze({
     highDpiSupport: true
 })
 
+
+/*
+    Add gauge object to specified in monitoredItemConfig DOM element
+*/
 function addGauge(id) {
     var target = document.getElementById(monitoredItemConfig[id].elem);
     var gauge = new Gauge(target).setOptions(defaultGaugeOpts);
@@ -25,6 +29,10 @@ function addGauge(id) {
     return gauge;
 }
 
+
+/*
+    Update object value depending on its type 
+*/
 function updateObject(id, value){
     switch(monitoredItemConfig[id].type){
         case TYPES.GAUGE:
@@ -33,10 +41,17 @@ function updateObject(id, value){
     }
 }
 
+/*
+    Update gauge value in monitoredObjects array
+*/
 function updateGauge(id, value){
     monitoredObjects[id].set(rescale(value, monitoredItemConfig[id].min, monitoredItemConfig[id].max));
 }
 
+
+/*
+    Rescale 0-1 real to min - max range
+*/
 function rescale(val, min, max){
     return (val * (max-min) + min);
 }

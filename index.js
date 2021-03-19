@@ -25,7 +25,9 @@ const {
 
 const endpointUrl = "opc.tcp://localhost:9000";
 
-
+/*
+    Definition of nodes to be monitored by OPC client
+*/
 const OPC_monitoredItems = [
     {
         nodeId: 'ns=2;i=2',
@@ -33,6 +35,9 @@ const OPC_monitoredItems = [
     }
 ];
 
+/*
+    Definition of nodes that can be read by OPC client
+*/
 const OPC_readableItems = {
     WorkSignal: {
         nodeId: 'ns=2;i=3',
@@ -40,10 +45,16 @@ const OPC_readableItems = {
     }
 };
 
+/*
+    Definition of nodes that can be written by OPC client
+*/
 const OPC_writableItems = {
     WorkOrder: 'ns=2;i=3',
 };
 
+/*
+    Setup of OPC client and its behaviour
+*/
 async function runServer() {
     let running = true;
     const client = OPCUAClient.create({
@@ -99,14 +110,15 @@ async function runServer() {
     });
 }
 
-function main(){
+
+/*
+    Program entrance
+*/
+(() => {
     try {
         runServer();
     }catch(e){
         console.log(e);
         process.exit(-1);
     }
-}
-
-
-main()
+})();
