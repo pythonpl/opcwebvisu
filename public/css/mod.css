@@ -10,3 +10,9 @@ label {
 .card {
     margin-top: 15px;
 }
+
+.gauge-text {
+    text-align: center;
+    font-size: 18pt;
+    font-weight: bold;
+}

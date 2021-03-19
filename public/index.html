@@ -31,6 +31,7 @@
                 <h5 class="card-header">Miernik</h5>
                 <div class="card-body">
                     <canvas id="gauge1" style="width:100%"></canvas>
+                    <div id="gauge1_label"></div>
                 </div>
             </div>
         </div>
@@ -39,33 +40,38 @@
 
     <script>
         const socket = io.connect('http://localhost:3700');
-        var monitoredObjects = {}
-        var monitoredItemConfig = {
-            0: {
+        var monitoredItemConfig = [
+            {
                 type: TYPES.GAUGE,
                 elem: 'gauge1',
+                obj: null,
+                nodeId: 0,
                 min: 0,
-                max: 100
+                max: 100,
+                label: true
+            }
+        ]
+
+        var writtableItemConfig = {
+            0: {
+                type: TYPES.BUTTON,
+                elem: 'button1'
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             /* Create objects for monitored items */
-            for (id in monitoredItemConfig) {
+            for (element of monitoredItemConfig) {
                 try {
-                    if (monitoredItemConfig[id].type == TYPES.GAUGE) {
-                        monitoredObjects[id] = addGauge(id);
-                    }
-                }
-                catch (e) {
+                    element.obj = addObject(element)
+                } catch (e) {
                     console.log(e);
                 }
             }
 
-
             /* Monitored item value changed - update object */
             socket.on('updateMonitored', (data) => {
-                updateObject(data.id, data.val);
+                updateObjects(data.nodeId, data.val);
             });
         });
 

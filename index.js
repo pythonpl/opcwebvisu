@@ -97,7 +97,8 @@ async function runServer() {
     // Monitored item changed
     OPC_items.on("changed", (monitoredItem, dataValue, index) => {
         io.sockets.emit('updateMonitored', {
-            id: index,
+            // Monitored item ID
+            nodeId: index,
             val: dataValue.value.value
         });
     });
