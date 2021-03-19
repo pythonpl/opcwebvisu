@@ -33,6 +33,8 @@ function addObject(element) {
     switch (element.type) {
         case TYPES.GAUGE:
             return addGauge(element);
+        case TYPES.BUTTON:
+            return addButton(element);
     }
 }
 
@@ -58,16 +60,25 @@ function addGauge(obj) {
     return gauge;
 }
 
+function addButton(obj) {
+    (document.getElementById(obj.elem)).addEventListener("click", ()=>{
+        socket.emit("buttonEvent", {
+            nodeId : obj.nodeId,
+            value: obj.val
+        })
+    });
+}
+
 
 /*
     Update object value depending on its type 
 */
-function updateObject(nodeId, value) {
+function updateObjects(nodeId, value) {
     for (obj of monitoredItemConfig) {
         if (obj.nodeId == nodeId) {
             switch (obj.type) {
                 case TYPES.GAUGE:
-                    updateGauge(obj.obj, value);
+                    updateGauge(obj, value);
                     break;
             }
         }
@@ -79,7 +90,7 @@ function updateObject(nodeId, value) {
 */
 function updateGauge(obj, value) {
     try {
-        oobj.set(rescale(value, obj.min, obj.max));
+        obj.obj.set(rescale(value, obj.min, obj.max));
     } catch (e) {
         console.log(e);
     }

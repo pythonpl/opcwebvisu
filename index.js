@@ -91,6 +91,7 @@ async function runServer() {
     // Webvisu client connected
     io.sockets.on('connection', function (socket) {
         console.log('[socket.io]: client connected')
+        handleSocketSignals(socket, session);
     });
 
 
@@ -115,6 +116,16 @@ async function runServer() {
         await session.close();
         await client.disconnect();
         process.exit(0);
+    });
+}
+
+/*
+    Handling events from interface
+*/
+function handleSocketSignals(socket, session){
+    // Handle button signals
+    socket.on('buttonEvent', async (data)=>{
+        await session.writeSingleNode(OPC_writableItems[data.nodeId], { dataType: "Boolean", value: data.value });
     });
 }
 

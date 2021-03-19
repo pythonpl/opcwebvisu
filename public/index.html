@@ -32,6 +32,8 @@
                 <div class="card-body">
                     <canvas id="gauge1" style="width:100%"></canvas>
                     <div id="gauge1_label"></div>
+                    <input type="button" id="button1" value="Włącz">
+                    <input type="button" id="button2" value="Wyłącz">
                 </div>
             </div>
         </div>
@@ -40,6 +42,7 @@
 
     <script>
         const socket = io.connect('http://localhost:3700');
+
         var monitoredItemConfig = [
             {
                 type: TYPES.GAUGE,
@@ -52,12 +55,20 @@
             }
         ]
 
-        var writtableItemConfig = {
-            0: {
+        var writtableItemConfig = [
+            {
                 type: TYPES.BUTTON,
-                elem: 'button1'
+                elem: 'button1',
+                nodeId: 'WorkOrder',
+                val: true
+            },
+            {
+                type: TYPES.BUTTON,
+                elem: 'button2',
+                nodeId: 'WorkOrder',
+                val: false
             }
-        }
+        ]
 
         window.addEventListener('DOMContentLoaded', () => {
             /* Create objects for monitored items */
@@ -66,6 +77,15 @@
                     element.obj = addObject(element)
                 } catch (e) {
                     console.log(e);
+                }
+            }
+
+            /* Create objects for writtable items */
+            for (element of writtableItemConfig) {
+                try {
+                    addObject(element)
+                } catch (e) {
+                    console.log(e)
                 }
             }
 
