@@ -39,7 +39,7 @@
 
     <script>
         const socket = io.connect('http://localhost:3700');
-        var objects = {}
+        var monitoredObjects = {}
 
         var monitoredItemConfig = {
             0: {
@@ -54,7 +54,7 @@
             for (id in monitoredItemConfig) {
                 try {
                     if (monitoredItemConfig[id].type == TYPES.GAUGE) {
-                        objects[id] = addGauge(id);
+                        monitoredObjects[id] = addGauge(id);
                     }
                 }
                 catch (error) {

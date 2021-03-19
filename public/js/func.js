@@ -34,7 +34,7 @@ function updateObject(id, value){
 }
 
 function updateGauge(id, value){
-    objects[id].set(rescale(value, monitoredItemConfig[id].min, monitoredItemConfig[id].max));
+    monitoredObjects[id].set(rescale(value, monitoredItemConfig[id].min, monitoredItemConfig[id].max));
 }
 
 function rescale(val, min, max){
