@@ -58,13 +58,6 @@ function addGauge(obj) {
     return gauge;
 }
 
-/*
-    Add Label object to specified in monitoredItemConfig DOM element
-*/
-function addLabel(obj) {
-    var target = document.getElementById(obj.elem);
-    return gauge;
-}
 
 /*
     Update object value depending on its type 
@@ -74,7 +67,7 @@ function updateObject(nodeId, value) {
         if (obj.nodeId == nodeId) {
             switch (obj.type) {
                 case TYPES.GAUGE:
-                    updateGauge(obj, value);
+                    updateGauge(obj.obj, value);
                     break;
             }
         }
@@ -86,15 +79,12 @@ function updateObject(nodeId, value) {
 */
 function updateGauge(obj, value) {
     try {
-        obj.obj.set(rescale(value, obj.min, obj.max));
+        oobj.set(rescale(value, obj.min, obj.max));
     } catch (e) {
         console.log(e);
     }
 }
 
-function updateLabel(obj, value) {
-
-}
 
 /*
     Rescale 0-1 real to min - max range
