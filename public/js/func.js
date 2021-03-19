@@ -16,14 +16,12 @@ const defaultGaugeOpts = Object.freeze({
     highDpiSupport: true
 })
 
-function addGauge(elementID, min, max) {
-    var target = document.getElementById(elementID);
+function addGauge(id) {
+    var target = document.getElementById(monitoredItemConfig[id].elem);
     var gauge = new Gauge(target).setOptions(defaultGaugeOpts);
-
-    gauge.maxValue = max;
-    gauge.minValue = min;
-    gauge.set(min);
-
+    gauge.maxValue = monitoredItemConfig[id].max;
+    gauge.minValue = monitoredItemConfig[id].min;
+    gauge.set(monitoredItemConfig[id].min);
     return gauge;
 }
 

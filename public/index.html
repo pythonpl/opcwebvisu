@@ -51,21 +51,19 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            for (element in monitoredItemConfig) {
-                let id = element;
-                element = monitoredItemConfig[element];
+            for (id in monitoredItemConfig) {
                 try {
-                    if (element.type == TYPES.GAUGE) {
-                        objects[id] = addGauge(element.elem, element.min, element.max);
+                    if (monitoredItemConfig[id].type == TYPES.GAUGE) {
+                        objects[id] = addGauge(id);
                     }
                 }
                 catch (error) {
-                    console.log(error)
+                    console.log(error);
                 }
             }
 
             socket.on('updateMonitored', (data) => {
-                updateObject(data.id, data.val)
+                updateObject(data.id, data.val);
             });
         });
 
